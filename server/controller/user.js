@@ -1,30 +1,45 @@
-const hash = require('../helper/hash');
 const token = require('../helper/jwt');
-const genSalt = require('../helper/saltGen');
+const genSalt=require('../helper/saltGen');
+const createHash=require('../helper/hash');
+// const signinFB = require('../models/signinFB');
 const user = require('../models/user');
 
 class User {
-  static sigin(req,res){
-    if (req.body.username == '' || req.body.password == '') {
-      req.status(400).send('username/password anda salah')
+  static findAll(req,res,next){
+    user.find({
+    })
+    .then(rows=>{
+      res.status(200).json(rows);
+    })
+    .catch(err=>{
+      res.status(400).json(err)
+    })
+  }
+  static signin(req,res,next){
+    if (req.body.username=='' || req.body.password=='') {
+      res.status(400).send('username/password anda kosong!')
     } else {
-      user.findOne({username:req.body.username})
-      .then(rows => {
-        if (rows.password === hash(req.body.password, rows.salt)) {
+      user.findOne({
+        username:req.body.username
+      })
+      .then(rows=>{
+        if (rows.password==createHash(req.body.password,rows.salt)) {
           res.json({
-            message:'Login berhasil',
-            roken:token.create({
+            message:"Login sukses",
+            token:token.create({
               userId:rows._id,
               username:rows.username,
-              imageUrl:rows.imageUrl
-            })
+              imageUrl: rows.imageUrl,
+            }),
+            role:rows.role
           })
         } else {
-          req.status(400).send('username/password anda salah')
+          res.status(400).send('Maaf password anda salah!')
         }
       })
-      .catch(err => {
-        req.status(400).send(err)
+      .catch(err=>{
+        // res.status(400).send('Maaf user anda tidak terdaftar!')
+        res.status(400).send(err)
       })
     }
   }
@@ -32,19 +47,20 @@ class User {
     let salt=genSalt();
     user.create({
       username:`${req.body.username}`,
-      password:`${createHash(req.body.pasword, salt)}`,
+      password:`${createHash(req.body.password,salt)}`,
+      email:`${req.body.email}`,
       imageUrl:`${req.body.imageUrl}`,
+      // role:`${req.body.role}`,
       role:`user`,
-      salt:`${salt}`
+      salt:`${salt}`,
+
     })
     .then((rows)=>{
-      res.json({
-        message:'Signup Sukese',
-        data:rows
-      })
+      res.json({"message":"Signup sukses",
+      "data":rows});
     })
     .catch(err=>{
-      res.send(err)
+      res.send(err);
     })
   }
 }

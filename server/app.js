@@ -10,7 +10,7 @@ app.use(cors());
 
 app.get('/', (req,res,nex)=>{
   res.json(
-    name:'server hacktivpress'
+    {name:'server hacktivpress'}
   )
 })
 
