@@ -15,8 +15,10 @@ app.get('/', (req,res,nex)=>{
 })
 
 const user = require('./routes/user');
+const article = require('./routes/article');
 
 app.use('/users',user);
+app.use('/articles',article);
 
 module.exports = app.listen(process.env.PORT || 3000, ()=>{
   console.log('Listening from port 3000');
