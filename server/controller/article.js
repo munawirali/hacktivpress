@@ -43,6 +43,7 @@ class User {
       title:`${req.body.title}`,
       content:`${req.body.content}`,
       category:`${req.body.category}`,
+      imageUrl:`${req.body.imageUrl}`,
       author:`${req.body.author}`,
     })
     .then((rows)=>{
@@ -60,6 +61,7 @@ class User {
         title:`${req.body.title}`,
         content:`${req.body.content}`,
         category:`${req.body.category}`,
+        imageUrl:`${req.body.imageUrl}`,
         author:`${req.body.author}`,
     })
     .then((rows)=>{
