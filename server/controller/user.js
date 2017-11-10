@@ -24,14 +24,14 @@ class User {
       })
       .then(rows=>{
         if (rows.password==createHash(req.body.password,rows.salt)) {
-          res.json({
+          res.status(200).send({
             message:"Login sukses",
             token:token.create({
               userId:rows._id,
               username:rows.username,
               imageUrl: rows.imageUrl,
-            }),
-            role:rows.role
+              role:rows.role
+            })
           })
         } else {
           res.status(400).send('Maaf password anda salah!')
