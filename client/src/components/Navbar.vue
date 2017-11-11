@@ -15,8 +15,12 @@
     <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
       <ul class="nav navbar-nav">
-        <li class="active"><a href="#">Home <span class="sr-only">(current)</span></a></li>
-        <li><a href="#">Admin</a></li>
+        <li><router-link to="/">Home</router-link></li>
+        <li v-if="userLogin.length==0">
+        </li>
+        <li v-else>
+          <router-link to="/admin">Admin</router-link>
+        </li>
       </ul>
       <form class="navbar-form navbar-left">
         <div class="form-group">
@@ -25,11 +29,18 @@
         <button type="submit" class="btn btn-default">Submit</button>
       </form>
       <ul class="nav navbar-nav navbar-right">
-        <li><a href="#">Register</a></li>
-        <li><a href="#">Login</a></li>
-        <!-- <li>
-          <li><Login :frmLogin=frmLogin @emitLogin="signIn"></Login></li> data-toggle="modal" data-target="#login">Login</a></li>
-        </li> -->
+        <li><Login :frmLogin=frmLogin @emitLogin="signIn"></Login></li>
+        <li v-if="userLogin.length==0"><a @click="setBlankForm" href="" data-toggle="modal" data-target="#login">Login</a></li>
+        <li v-else><a @click="logout" href="">Logout</a></li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><Signup :frmSignup=frmSignup @emitSignup="addUser"></Signup></li>
+        <li v-if="userLogin.length==0">
+          <a @click="setBlankForm" :disabled="!userLogin.length" href="" data-toggle="modal" data-target="#signup">Signup</a>
+        </li>
+        <li v-else>
+          <a href="#">Username : {{ userLogin.username }}</a>
+        </li>
       </ul>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->
@@ -37,9 +48,54 @@
 </template>
 
 <script>
-// import Login from '@/components/login'
+import Login from '@/components/login'
+import Signup from '@/components/Signup'
+import {mapState, mapActions} from 'vuex'
 export default {
-
+  components: {
+    Login,
+    Signup
+  },
+  data () {
+    return {
+      frmSignup: {
+        username: '',
+        password: '',
+        email: '',
+        imageUrl: ''
+      },
+      frmLogin: {
+        username: '',
+        password: ''
+      }
+    }
+  },
+  methods: {
+    ...mapActions([
+      'addUser',
+      'signIn',
+      'getUserActive'
+    ]),
+    logout () {
+      // console.log('asdfasd')
+      localStorage.removeItem('HCKPRS-Token')
+    },
+    setBlankForm () {
+      this.frmSignup.username = ''
+      this.frmSignup.password = ''
+      this.frmSignup.email = ''
+      this.frmLogin.username = ''
+      this.frmLogin.password = ''
+    }
+  },
+  computed: {
+    ...mapState([
+      'userLogin'
+    ])
+  },
+  mounted () {
+    this.getUserActive()
+  }
 }
 </script>
 
