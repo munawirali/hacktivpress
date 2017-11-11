@@ -12,7 +12,7 @@ var ArticleSchema = new Schema({
     content   : { type:String },
     category  : { type:String },
     imageUrl  : { type:String },
-    author    : { type:Schema.Types.ObjectId, ref: 'Users' },
+    author    : { type: Schema.Types.ObjectId, ref: 'Users' }
 });
 
 module.exports = mongoose.model('Articles', ArticleSchema);

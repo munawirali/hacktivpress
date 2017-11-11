@@ -4,6 +4,7 @@ class User {
   static findAll(req,res,next){
     article.find({
     })
+    .populate('author')
     .then(rows=>{
       res.status(200).json({
       meesage:'Data founded',
@@ -27,8 +28,11 @@ class User {
     })
   }
   static findByUser(req,res,next){
-    article.findOne({author:req.params.id})
+    // console.log('ini params', req.params.id);
+    article.find({author:req.params.id})
+    .populate('author')
     .then(rows=>{
+      console.log('jangkrik tenan', rows);
       res.status(200).json({
       meesage:'Data founded',
       data:rows
@@ -44,7 +48,7 @@ class User {
       content:`${req.body.content}`,
       category:`${req.body.category}`,
       imageUrl:`${req.body.imageUrl}`,
-      author:`${req.body.author}`,
+      author:req.body.author,
     })
     .then((rows)=>{
       res.json({"message":"Create data sukses",
@@ -77,7 +81,7 @@ class User {
         _id:req.params.id
       })
     .then((rows)=>{
-      res.json({"message":"Update data sukses",
+      res.json({"message":"Delete data sukses",
       data:rows});
     })
     .catch(err=>{
